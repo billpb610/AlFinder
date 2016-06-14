@@ -1,19 +1,23 @@
 #-*- coding: utf-8 -*-
-# MS2_Hunter Ver beta 0.1
-#
-# This script reads the .mzML MS data, and extracts the MS/MS information of SLGGDSIMGIQLVSR peptide
-# and its modified analogue according to the tag ions
+# AlFinder strategy 1
+# Version 0.11
+# This script reads the *.mzML (all mzML file in current folder) MS data, and extracts the MS/MS information of
+# SLGGDSIMGIQLVSR peptide and its modified analogue according to the tag ions
 #
 # Tag ions include y9, y8, y7, y5, and y4
 #
-# The result writes in a .csv file, which has the same name to .mzML file
-# The recoding information include spectrumID, precursor's retention time, precursor's charge, precursor's m/z and
-# the 5 highest peaks of MS/MS spectrum
+# The result writes in a *_S1.csv file, * is the name of .mzML file
+# The recoding information include spectrumID, precursor's retention time, precursor's charge, precursor's m/z,
+# the 5 highest peaks of MS/MS spectrum , the theoretical ppant ejection m/z (based on the m/z of precursors),
+# whether the theoretical ppant ejection is found in ms/ms spectrum and the relative intension of ppant ejection
+# ion according to base peak
+#
+# Also try to write a new mzML file include the selective ms/ms spectrums, the name is *_S1.mzML
 #
 # Based on hasPeak.py from example script of pymzML
 # Author: Bo Pang (SIOC)
 # Bless!
-# Update V0.11- Based on V 0.1, adding the FileList Function to read the filename in current directory, return a list
+
 
 
 import sys
@@ -43,7 +47,7 @@ def write_csv_file(ms_file_main, data_list):
 
 def main(ms_file):
     run = open_ms_file(ms_file)
-    print('Now processing %s ...' %(ms_file))
+    print('Now processing %s, based on precursor selection strategy 1' %(ms_file))
     for spectrum in run:
         if isinstance(spectrum['id'],str):continue
         #if spectrum['id'] < 5000: continue
@@ -85,6 +89,7 @@ def main(ms_file):
                 write.append(spectrum["precursors"][0]['charge'])
                 write.append(spectrum["precursors"][0]['mz'])
                 write.extend(highestPeak_mz)
+                write.append(theo_ppant_ejection())
                 print(spectrum['id'])
                 write_csv_file(ms_file, write)
 mzfiles = FileList()
