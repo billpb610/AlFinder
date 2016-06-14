@@ -1,6 +1,6 @@
 ### INTRODUCTION
 
-ALFinder reads the .mzML MS data, and extracts the MS/MS information of SLGGDSIMGIQLVSR peptide and its modified analogue according to the tag ions.
+AlFinder reads the .mzML MS data, and extracts the MS/MS information of SLGGDSIMGIQLVSR peptide and its modified analogue according to the tag ions.
 
 The tag ions are the y ions of precursors peptide's HCD MS/MS, 2 strategies for tag ions selection are used respectively:
 1. The hit ions contain y9, y8, y7, y5, and y4, the precursor will be considered as a target
