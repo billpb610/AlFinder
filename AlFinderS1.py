@@ -57,7 +57,7 @@ def main(ms_file):
     print('Now processing %s' %(ms_file))
     for spectrum in run:
         if isinstance(spectrum['id'],str):continue
-        if spectrum['id'] < 5000: continue
+        #if spectrum['id'] < 5000: continue
         print(spectrum['id'])
         if spectrum['ms level'] == 2:
             test1 = spectrum.hasPeak(1016.5921)
