@@ -1,19 +1,23 @@
 #-*- coding: utf-8 -*-
-# MS2_Hunter Ver beta 0.2
+# AlFinder strategy 2
+# Version 0.12
+# This script reads the *.mzML (all mzML file in current folder) MS data, and extracts the MS/MS information of
+# SLGGDSIMGIQLVSR peptide and its modified analogue according to the tag ions
 #
-# This script reads the .mzML MS data, and extracts the MS/MS information of SLGGDSIMGIQLVSR peptide
-# and its modified analogue according to the tag ions
+# Tag ions include y1-y9, at least 6 hits make the precursor selected
 #
-# Tag ions include y9, y8, y7, y5, and y4
+# The result writes in a *_S2.csv file, * is the name of .mzML file
+# The recoding information include spectrumID, precursor's retention time, precursor's charge, precursor's m/z,
+# the 5 highest peaks of MS/MS spectrum , the theoretical ppant ejection m/z (based on the m/z of precursors),
+# whether the theoretical ppant ejection is found in ms/ms spectrum and the relative intension of ppant ejection
+# ion according to base peak
 #
-# The result writes in a .csv file, which has the same name to .mzML file
-# The recoding information include spectrumID, precursor's retention time, precursor's charge, precursor's m/z and
-# the 5 highest peaks of MS/MS spectrum
+# Also try to write a new mzML file include the selective ms/ms spectrums, the name is *_S2.mzML (ongoing)
 #
 # Based on hasPeak.py from example script of pymzML
 # Author: Bo Pang (SIOC)
 # Bless!
-# Update V0.21- Based on V 0.2, adding the FileList Function to read the filename in current directory, return a list
+
 
 import sys
 import pymzml
@@ -33,18 +37,24 @@ def open_ms_file(ms_file_main):
         return(None)
 
 def write_csv_file(ms_file_main, data_list):
-    with open(ms_file_main+'-v21.csv','a',newline='') as csv_file:
+    with open(ms_file_main+'_S2.csv','a',newline='') as csv_file:
         write_data = [data_list]
         csvout=csv.writer(csv_file)
         print(write_data)
         csvout.writerows(write_data)
 
+def theo_ppant_ejection(precursor_mz, precursor_charge):
+    return precursor_mz * precursor_charge - 1.00783 * precursor_charge - 1610.7619
+
+def writemzML():
+    pass
+
 def main(ms_file):
     run = open_ms_file(ms_file)
-    print('Now processing %s ...' %(ms_file+'.mzML'))
+    print('Now processing %s ...' %(ms_file))
     for spectrum in run:
         if isinstance(spectrum['id'],str):continue
-        #if spectrum['id'] < 5000: continue
+        if spectrum['id'] < 5000: continue
         print(spectrum['id'])
         if spectrum['ms level'] == 2:
             test = []
@@ -61,26 +71,36 @@ def main(ms_file):
 
             tests = 0
             for test_Peak in test:
-                if test_Peak:
+                if test_Peak !=[]:
                     tests += 1
            
 
             hightP=sorted(spectrum.highestPeaks(5),key = lambda x:x[1],reverse = True)
             highestPeak_mz = []
-            write=[]
+            writecsv=[]
             if tests >= 6:
                 for mz, i in hightP:
                     highestPeak_mz.append(mz)
-                write.append(spectrum['id'])
-                write.append(spectrum['scan start time'])
-                write.append(spectrum["precursors"][0]['charge'])
-                write.append(spectrum["precursors"][0]['mz'])
-                write.extend(highestPeak_mz)
-                print(spectrum['id'])
-                write_csv_file(ms_file, write)
+                writecsv.append(spectrum['id'])
+                writecsv.append(spectrum['scan start time'])
+                writecsv.append(spectrum["precursors"][0]['charge'])
+                writecsv.append(spectrum["precursors"][0]['mz'])
+                writecsv.extend(highestPeak_mz)
+                theo_ppant = round(theo_ppant_ejection(spectrum["precursors"][0]['mz'], spectrum["precursors"][0]['charge']), 5)
+                writecsv.append(theo_ppant)
+                if spectrum.hasPeak(theo_ppant) != []:
+                    writecsv.append('Eject')
+                    print(theo_ppant)
+                    print(spectrum.hasPeak(theo_ppant)[0][1])
+                    print(hightP[0][1])
+                    writecsv.append(spectrum.hasPeak(theo_ppant)[0][1] / hightP[0][1] * 100)
+                else:
+                    writecsv.append('No Eject')
+                    writecsv.append('0')
+                write_csv_file(ms_file, writecsv)
 
 mzfiles = FileList()
-print("We will process this file:", mzfiles)
+print("We will process this file:", mzfiles, ", based on precursor selection strategy 2")
 for mzfile in mzfiles:
     try:
         main(mzfile)
