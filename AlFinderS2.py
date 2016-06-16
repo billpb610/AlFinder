@@ -31,7 +31,7 @@ def FileList():
 def open_ms_file(ms_file_main):
     try:
         ms_file_name = ms_file_main
-        return pymzml.run.Reader(ms_file_name, MS1_Precision = 10e-6, MSn_Precision = 20e-6)
+        return pymzml.run.Reader(ms_file_name, MS1_Precision = 10e-6, MSn_Precision = 40e-6)
     except IOError as ioerr:
         print('File error: '+ioerr)
         return(None)
@@ -90,12 +90,14 @@ def main(ms_file):
                 writecsv.append(theo_ppant)
                 if spectrum.hasPeak(theo_ppant) != []:
                     writecsv.append('Eject')
+                    writecsv.append(spectrum.hasPeak(theo_ppant)[0][0])
                     print(theo_ppant)
                     print(spectrum.hasPeak(theo_ppant)[0][1])
                     print(hightP[0][1])
                     writecsv.append(spectrum.hasPeak(theo_ppant)[0][1] / hightP[0][1] * 100)
                 else:
                     writecsv.append('No Eject')
+                    writecsv.append('0')
                     writecsv.append('0')
                 write_csv_file(ms_file, writecsv)
 
