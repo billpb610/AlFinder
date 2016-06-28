@@ -22,6 +22,7 @@
 import sys
 import pymzml
 import csv
+import os
 import glob
 
 def FileList():
@@ -55,7 +56,8 @@ def main(ms_file):
     for spectrum in run:
         if isinstance(spectrum['id'],str):continue
         #if spectrum['id'] < 5000: continue
-        print(spectrum['id'])
+        if spectrum['id'] % 1000 == 0:
+            print(spectrum['id'])
         if spectrum['ms level'] == 2:
             test = []
             test.append(spectrum.hasPeak(1016.5921))
@@ -101,6 +103,8 @@ def main(ms_file):
                     writecsv.append('0')
                 write_csv_file(ms_file, writecsv)
 
+cmd = "msconvert *.raw"
+os.system(cmd)
 mzfiles = FileList()
 print("We will process this file:", mzfiles, ", based on precursor selection strategy 2")
 for mzfile in mzfiles:
