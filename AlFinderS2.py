@@ -6,7 +6,7 @@
 # 
 # y1-y9 fragment ions were set as tag ions, MS/MS spectrums share > 5 of which were selected as candidates.
 #
-# The result writes in a *_S2.csv file, * is the name of .mzML file
+# The results were saved in *_S2.csv files, * is the name of .mzML file
 # The recoding information include spectrumID, precursor's retention time, precursor's charge, precursor's m/z,
 # the 5 highest peaks of MS/MS spectrum , the theoretical ppant ejection m/z (based on the m/z of precursors),
 # whether the theoretical ppant ejection is found in ms/ms spectrum and the relative intension of ppant ejection
