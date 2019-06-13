@@ -1,6 +1,4 @@
 #-*- coding: utf-8 -*-
-# AlFinder strategy 2
-# Version 0.12
 # This script reads all mzML file in current folder and extracts the MS and MS/MS information of
 # SLGGDSIMGIQLVSR derived peptides.
 # 
