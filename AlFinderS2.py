@@ -1,22 +1,18 @@
 #-*- coding: utf-8 -*-
 # AlFinder strategy 2
 # Version 0.12
-# This script reads the *.mzML (all mzML file in current folder) MS data, and extracts the MS/MS information of
-# SLGGDSIMGIQLVSR peptide and its modified analogue according to the tag ions
-#
-# Tag ions include y1-y9, at least 6 hits make the precursor selected
+# This script reads all mzML file in current folder and extracts the MS and MS/MS information of
+# SLGGDSIMGIQLVSR derived peptides.
+# 
+# y1-y9 fragment ions were set as tag ions, MS/MS spectrums share > 5 of which were selected as candidates.
 #
 # The result writes in a *_S2.csv file, * is the name of .mzML file
 # The recoding information include spectrumID, precursor's retention time, precursor's charge, precursor's m/z,
 # the 5 highest peaks of MS/MS spectrum , the theoretical ppant ejection m/z (based on the m/z of precursors),
 # whether the theoretical ppant ejection is found in ms/ms spectrum and the relative intension of ppant ejection
-# ion according to base peak
+# ion according to base peak.
 #
-# Also try to write a new mzML file include the selective ms/ms spectrums, the name is *_S2.mzML (ongoing)
-#
-# Based on hasPeak.py from example script of pymzML
 # Author: Bo Pang (SIOC)
-# Bless!
 
 
 import sys
